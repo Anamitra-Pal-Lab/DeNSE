@@ -13,5 +13,5 @@ b) Data_Pre_Processing.py
 c) DNN_training_SE.py
 d) Data_Post_Processing.py
 
-Keep the main function (line #9) and the related functions (line #12-15) in the same function with the data.
+Keep the main function and the related functions in the same function with the data.
 Good to go!
