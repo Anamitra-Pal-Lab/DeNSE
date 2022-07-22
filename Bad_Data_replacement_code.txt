@@ -1,0 +1,95 @@
+import numpy as np
+
+# eta = np.asarray([0.5]) # eta is the probability of bad data in the data set
+# sigma_mult = np.asarray([5]) # multiplying std - std by which data is multiplied so that the bad data is generated
+
+def Bad_Data_injection_to_test_data(X_test, X_train, eta, sigma_mult):
+    
+    #eta = np.asarray([0.1, 0.2, 0.3, 0.4, 0.5])
+    # eta = np.asarray([0.5]) # eta is the probability of bad data in the data set
+    # sigma_mult = np.asarray([5]) # multiplying std - std by which data is multiplied so that the bad data is generated
+    counter = 0 # to count how many bad data samples are being used
+    bad_data_index = [] # to store the index of bad data
+    
+    for eta_index in range(0, eta.shape[0]): # itearting over every eta
+        for sigma_mult_index in range(0, sigma_mult.shape[0]):
+            print(eta[eta_index])
+            X_test_bad = np.copy(X_test) ### This line initializing the X_test_bad
+            bad_data_index_samplewise_list = []
+            for i in range(0,X_test.shape[0]):#
+                bad_data_index_list_row = []
+                for j in range(0, X_test.shape[1]):
+                    if np.random.binomial(1, eta[eta_index], 1)==1:
+                        print(str(i), str(j))
+                        X_test_bad[i,j] = X_test[i,j] + np.random.randn(1, 1)*sigma_mult[sigma_mult_index]*X_train.std(axis=0)[j]
+                        bad_data_index.append([i,j])
+                        bad_data_index_list_row.append([i,j])
+                        counter = counter+1
+                bad_data_index_samplewise_list.append(bad_data_index_list_row)
+                        
+                        
+    print(counter)
+    
+    return(X_test_bad, bad_data_index_samplewise_list)
+
+
+# Entire_buses_int = Entire_buses.astype(np.int64)
+# bad_data_index_np = np.asarray(bad_data_index)
+def Bad_Data_replacement_with_mean(X_test_bad):
+    
+    # Wald test - Identify bad data - Replace it with mean
+
+    false_alarm_level_1 = 2.5758  #  1% level percentage
+    false_alarm_level_2 = 2.3263  #  2% level percentage
+    false_alarm_level_3 = 2.1701  #  3% level percentage
+    false_alarm_level_4 = 2.0537  #  4% level percentage
+    false_alarm_level_5 = 1.9600  #  5% level percentage
+
+    bad_data_index_wald_test = np.where(abs(X_test_bad)  > false_alarm_level_1)
+    X_test_bad_replaced_w_mean = np.copy(X_test_bad)
+    X_test_bad_replaced_w_mean[bad_data_index_wald_test[0],bad_data_index_wald_test[1]] = 0
+    return(X_test_bad_replaced_w_mean)
+
+
+
+def Robust_Bad_Data_replacement_with_nearest_OC(X_test_bad, X_train,):
+
+    print(np.asarray(bad_data_index_wald_test).shape)
+
+    X_test_copy = np.copy(X_test)
+    X_train_copy = np.copy(X_train)
+
+    Input_feature_number = np.zeros((X_test.shape[1],1)) # Initializing the Lcoation of all buses 
+    for q in range(X_test.shape[1]):
+      Input_feature_number[q] = q # Lcoation of all buses (numpy array from 1 to 118)
+      
+    bad_data_index_wald_test_np = np.asarray(bad_data_index_wald_test).T
+    a1 = bad_data_index_wald_test_np
+    bad_data_samples_feature_index_list = np.split(a1[:,1], np.unique(a1[:, 0], return_index=True)[1][1:])
+    bad_data_sample_index = np.unique(a1[:, 0])
+    bad_data_sample_index = bad_data_sample_index.astype(np.int64)
+    
+    X_test_bad_replaced_with_nearest_OC = np.copy(X_test_bad)
+
+    #for i in range(0,1):#
+    for i in range(0,len(bad_data_samples_feature_index_list)):#
+        print(i)
+        np_of_bad_features_curr_Sample = np.asarray(bad_data_samples_feature_index_list[i])
+        np_of_good_features_curr_Sample = np.delete(Input_feature_number,np_of_bad_features_curr_Sample)
+        np_of_good_features_curr_Sample = np_of_good_features_curr_Sample.astype(np.int64)
+        X_train_L2_score_curr_sample = np.sum(np.abs(X_train_copy[:,np_of_good_features_curr_Sample] - X_test_copy[bad_data_sample_index[i],np_of_good_features_curr_Sample].reshape(-1,1).T)**2,axis=1)**(1./2)
+        #X_train_L2_score_curr_sample = np.sum(np.abs(X_train_copy[:,np_of_good_features_curr_Sample])**2,axis=1)**(1./2)
+        nearest_OC_curr_sample = np.argmin(X_train_L2_score_curr_sample)
+        X_test_bad_replaced_with_nearest_OC[bad_data_sample_index[i],np_of_bad_features_curr_Sample] = X_train_copy[nearest_OC_curr_sample,np_of_bad_features_curr_Sample]
+            
+        return(X_test_bad_replaced_with_nearest_OC)
+
+
+
+    
+
+
+
+
+
+
