@@ -43,13 +43,13 @@ tf.random.set_seed(seed_value)
 ##################################################################################################
 ## Data Pre-processing stage (using training data)
 
-
-df_If_mag = pd.read_csv('#Training_From_Bus_Magnitude_Data'), header = None)
-df_If_ang = pd.read_csv('#Training_From_Bus_PhaseAngle_Data'), header = None)
-df_It_mag= pd.read_csv('#Training_To_Bus_Magnitude_Data'), header = None)
-df_It_ang = pd.read_csv('#Training_To_Bus_PhaseAngle_Data'), header = None)
-df_VDATA_mag = pd.read_csv('#Training_Voltage_Magnitude_Data'), header = None)
-df_VDATA_ang = pd.read_csv('#Training_Voltage_PhaseAngle_Data'), header = None)
+#Upload respective csv file for each 
+df_If_mag = pd.read_csv(''), header = None) # Upload csv file for Training_From_Bus_Magnitude_Data
+df_If_ang = pd.read_csv(''), header = None) # Upload csv file for Training_From_Bus_PhaseAngle_Data
+df_It_mag= pd.read_csv(''), header = None) # Upload csv file for Training_To_Bus_Magnitude_Data
+df_It_ang = pd.read_csv(''), header = None) # Upload csv file for Training_To_Bus_PhaseAngle_Data
+df_VDATA_mag = pd.read_csv(''), header = None) # Upload csv file for Training_Voltage_Magnitude_Data
+df_VDATA_ang = pd.read_csv(''), header = None) # Upload csv file for Training_Voltage_PhaseAngle_Data'
 ## Buses where PMUs are placed
 pmu_loc1 = [8,9,10,26,30,38,63,64,65,68,81]
 pmu_loc1_python_index = (np.asarray(pmu_loc1)-1).tolist()
@@ -75,12 +75,14 @@ X_train, X_val, y_train, y_val = train_test_split(x, y, test_size=0.25, random_s
 #%% Training Deep Neural Network Model
 model = DNN_training_base_topology(X_train, X_val, y_train, y_val, x, y)
 #%% Data Preprocesing Stage-Testing Data
-df_If_mag_test = pd.read_csv(filepath+('#Testing_From_Bus_Magnitude_Data'), header = None)
-df_If_ang_test = pd.read_csv('#Testing_From_Bus_PhaseAngle_Data'), header = None)
-df_It_mag_test= pd.read_csv('#Testing_To_Bus_Magnitude_Data'), header = None)
-df_It_ang_test = pd.read_csv('#Testing_To_Bus_PhaseAngle_Data'), header = None)
-df_VDATA_mag_test = pd.read_csv('#Testing_Voltage_Magnitude_Data'), header = None)
-df_VDATA_ang_test = pd.read_csv('#Testing_Voltage_PhaseAngle_Data'), header = None)
+#Upload respective csv file for each 
+
+df_If_mag_test = pd.read_csv(''), header = None) # Upload csv file for Testing_From_Bus_Magnitude_Data
+df_If_ang_test = pd.read_csv(''), header = None) # Upload csv file for Testing_From_Bus_PhaseAngle_Data
+df_It_mag_test= pd.read_csv(''), header = None) # Upload csv file for Testing_To_Bus_Magnitude_Data
+df_It_ang_test = pd.read_csv(''), header = None) # Upload csv file for Testing_To_Bus_PhaseAngle_Data
+df_VDATA_mag_test = pd.read_csv(''), header = None) # Upload csv file for Testing_Voltage_Magnitude_Data
+df_VDATA_ang_test = pd.read_csv(''), header = None) # Upload csv file for Testing_Voltage_PhaseAngle_Data
 # Extracting PMU placed buses data
 df_VDATA_ang_renamed_whole = df_VDATA_ang_test.rename(columns={x:y for x,y in zip(df_VDATA_ang_test.columns,range(0+118,len(df_VDATA_ang_test.columns)+118))}) 
 df_V_mag_PMU_test = df_VDATA_mag_test[df_VDATA_mag_test.columns[pmu_loc1_python_index]]
