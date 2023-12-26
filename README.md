@@ -11,8 +11,6 @@ The files containing the functions and their objectives are listed below.
 5. Bad data detection and correction (BDDC) - Demonstrating the DeNSE method's superiority in detecting and replacing bad data using the novel Nearest Operating Condition-based BDDC
 
 
-## Structure of Input and Output Datasets
-A
 
 
 
