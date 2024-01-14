@@ -11,7 +11,7 @@ The files containing the functions and their objectives are listed below.
 5. Bad data detection and correction (BDDC) - Demonstrating the DeNSE method's superiority in detecting and replacing bad data using the novel Nearest Operating Condition-based BDDC
 
 ## Sample Data for DeNSE
-1. A sample data set for demonstrating the base topology of DeNSE can be found at https://www.dropbox.com/scl/fo/sayc5kd7t61mnkb4bhbml/h?rlkey=qneqvldwjxh57zv2sijbp7lqq&dl=0.
+1. A sample data set for demonstrating the DeNSE functionalities on the base topology can be found at https://www.dropbox.com/scl/fo/sayc5kd7t61mnkb4bhbml/h?rlkey=qneqvldwjxh57zv2sijbp7lqq&dl=0.
 2. A sample data set for demonstrating the transfer learning capability of DeNSE for different topologies can be found at https://www.dropbox.com/scl/fo/unz106n0vhigokogbw4vj/h?rlkey=v7s0gdh2i7u300p10xebxkdet&dl=0.
 
 
