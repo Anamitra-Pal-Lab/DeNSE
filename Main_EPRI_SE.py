@@ -204,6 +204,31 @@ pred_bad_replaced_w_NOC = load.predict(X_test_bad_replaced_with_nearest_OC)
 #%%
 
 
+i =input("Enter the dataset: ")
+
+T = Load_Training_Data(filepath, i)
+
+
+[df_VDATA_mag, df_VDATA_ang, df_If_mag, df_If_ang, df_It_mag, df_It_ang, df_From_To_buses_118] = T
+
+
+
+[From_branches_req, To_branches_req] = PMU_current_flow_identifier(pmu_loc1, df_From_To_buses_118)
+sigma_mag = 0.01*2/6
+sigma_ang = 0.5*2/6
+
+
+[df_Input_NN, df_Output_NN] =  Generate_noisy_measurements_Gaussian_noise(sigma_mag, sigma_ang, df_VDATA_mag, df_VDATA_ang, df_If_mag, df_If_ang, df_It_mag, df_It_ang, df_From_To_buses_118, pmu_loc1,pmu_loc1_python_index, From_branches_req, To_branches_req)
+df_Input_NN_train = df_Input_NN
+
+df_Input_NN_normalized = Input_Data_Normalization(df_Input_NN, df_Input_NN_train)
+[df_Input_NN_normalized, df_Output_NN] =  Data_Removing_NaNs(df_Input_NN_normalized, df_Output_NN)
+x = df_Input_NN_normalized.values # x- input matrix
+y = df_Output_NN.values # y - output matrix
+X_train, X_val, y_train, y_val = train_test_split(x, y, test_size=0.25, random_state= 8) #
+
+
+model = DNN_training_TransferLearning(X_train, X_val, y_train, y_val, x, y)
 
 
 
