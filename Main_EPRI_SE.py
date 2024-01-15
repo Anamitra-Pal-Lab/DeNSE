@@ -205,7 +205,7 @@ pred_bad_replaced_w_NOC = load.predict(X_test_bad_replaced_with_nearest_OC)
 
 
 i =input("Enter the dataset: ")
-
+filepath = r"Transfer_Learning_Data" # path to Transfer Learning data folder from dropbox weblink
 T = Load_Training_Data(filepath, i)
 
 
