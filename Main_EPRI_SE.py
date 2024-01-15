@@ -209,7 +209,7 @@ filepath = r"Transfer_Learning_Data" # path to Transfer Learning data folder fro
 T = Load_Training_Data(filepath, i)
 
 
-[df_VDATA_mag, df_VDATA_ang, df_If_mag, df_If_ang, df_It_mag, df_It_ang, df_From_To_buses_118] = T
+[df_VDATA_mag, df_VDATA_ang, df_If_mag, df_If_ang, df_It_mag, df_It_ang] = T
 
 
 
