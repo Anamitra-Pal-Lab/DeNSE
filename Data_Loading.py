@@ -75,4 +75,4 @@ def Load_Training_Data(filepath, n):
     df_VDATA_mag = pd.read_csv(filepath+('VDATA_mag_train_T'+str(n)+'_12am.csv'), header = None)
     df_VDATA_ang = pd.read_csv(filepath+('VDATA_ang_train_T'+str(n)+'_12am.csv'), header = None)
 
-    return(df_VDATA_mag, df_VDATA_ang, df_If_mag, df_If_ang, df_It_mag, df_It_ang, df_From_To_buses_118)
+    return(df_VDATA_mag, df_VDATA_ang, df_If_mag, df_If_ang, df_It_mag, df_It_ang)
