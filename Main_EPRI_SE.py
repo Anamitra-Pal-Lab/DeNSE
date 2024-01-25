@@ -201,11 +201,12 @@ load = load_model("Base_topology_DNN_TF_11.h5")
 pred_bad_replaced_w_NOC = load.predict(X_test_bad_replaced_with_nearest_OC)
 #%%
 [Mag_MAPE_rwNOC, Angle_MAE_rwNOC] = Estimation_Error_MAE_viz(X_test_bad_replaced_with_nearest_OC,   y_test, pred_bad_replaced_w_NOC , pmu_loc1)
-#%%
+
+#%% Transfer Learning Section (TL)
 
 
 i =input("Enter the dataset: ")
-filepath = r"Transfer_Learning_Data" # path to Transfer Learning data folder from dropbox weblink
+filepath = r"Transfer_Learning_Data_Training" # path to Transfer Learning data folder from dropbox weblink
 T = Load_Training_Data(filepath, i)
 
 
@@ -228,7 +229,33 @@ y = df_Output_NN.values # y - output matrix
 X_train, X_val, y_train, y_val = train_test_split(x, y, test_size=0.25, random_state= 8) #
 
 
-model = DNN_training_TransferLearning(X_train, X_val, y_train, y_val, x, y)
+Transfer_learning_model = DNN_training_TransferLearning(X_train, X_val, y_train, y_val, x, y)
+
+filepath = r"Transfer_Learning_Data_Testing" # path to Transfer Learning data folder from dropbox weblink
+T_t = Load_Testing_Data(filepath, i)
+[df_VDATA_mag_test, df_VDATA_ang_test, df_If_mag_test, df_If_ang_test, df_It_mag_test, df_It_ang_test] = T_t
+# Extracting PMU placed buses data
+df_VDATA_ang_renamed_whole = df_VDATA_ang_test.rename(columns={x:y for x,y in zip(df_VDATA_ang_test.columns,range(0+118,len(df_VDATA_ang_test.columns)+118))}) 
+df_V_mag_PMU_test = df_VDATA_mag_test[df_VDATA_mag_test.columns[pmu_loc1_python_index]]
+df_V_ang_PMU_test = df_VDATA_ang_test[df_VDATA_ang_test.columns[pmu_loc1_python_index]]
+
+df_If_mag_PMU_test = df_If_mag_test[df_If_mag_test.columns[From_branches_req]]
+df_If_ang_PMU_test = df_If_ang_test[df_If_ang_test.columns[From_branches_req]]
+df_It_mag_PMU_test = df_It_mag_test[df_It_mag_test.columns[To_branches_req]]
+df_It_ang_PMU_test = df_It_ang_test[df_It_ang_test.columns[To_branches_req]]
+df_Input_NN_test = pd.concat([df_V_mag_PMU_test, np.deg2rad(df_V_ang_PMU_test), df_If_mag_PMU_test, np.deg2rad(df_If_ang_PMU_test), df_It_mag_PMU_test, np.deg2rad(df_It_ang_PMU_test) ], axis=1) # Concatenating voltage magnitude and angles to get input
+
+df_Output_NN_test = pd.concat([df_VDATA_mag_test,np.deg2rad(df_VDATA_ang_renamed_whole)], axis=1)
+
+# Normalizing and Removing NANs
+df_Input_NN_normalized_test = Input_Data_Normalization(df_Input_NN_test, df_Input_NN_train)
+[df_Input_NN_normalized_test, df_Output_NN_test] =  Data_Removing_NaNs(df_Input_NN_normalized_test, df_Output_NN_test)
+X_test_TL = df_Input_NN_normalized_test.values # x- input matrix
+y_test_TL = df_Output_NN_test.values # y - output 
+predicted_TL_state_esimates = load.predict(X_test_TL)
+[Mag_MAPE_TL, Angle_MAE_TL] = Estimation_Error_MAE_viz(X_test_TL,   y_test_TL, predicted_TL_state_esimates , pmu_loc1)
+
+
 
 
 
