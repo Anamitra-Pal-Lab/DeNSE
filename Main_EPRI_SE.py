@@ -231,8 +231,9 @@ X_train, X_val, y_train, y_val = train_test_split(x, y, test_size=0.25, random_s
 
 Transfer_learning_model = DNN_training_TransferLearning(X_train, X_val, y_train, y_val, x, y)
 
-filepath = r"Transfer_Learning_Data_Testing" # path to Transfer Learning data folder from dropbox weblink
-T_t = Load_Testing_Data(filepath, i)
+filepath_test = r"Transfer_Learning_Data_Testing" # path to Transfer Learning data folder from dropbox weblink
+T_t = Load_Testing_Data(filepath_test
+                        , i)
 [df_VDATA_mag_test, df_VDATA_ang_test, df_If_mag_test, df_If_ang_test, df_It_mag_test, df_It_ang_test] = T_t
 # Extracting PMU placed buses data
 df_VDATA_ang_renamed_whole = df_VDATA_ang_test.rename(columns={x:y for x,y in zip(df_VDATA_ang_test.columns,range(0+118,len(df_VDATA_ang_test.columns)+118))}) 
