@@ -3,6 +3,11 @@ This repository contains the resources for implementation of the DNN based State
 
 ## Motivation
 A
+## Languages and Dependencies
+The entire program was implemented using Python programming language.  Specifically, the open-source Python package Tensorflow was used to train the neural network models. For the data generation, the Matpower library in Matlab was used. 
+
+The standard Python libraries like Numpy, Pandas, Matplotlib etc. need to be installed to run these codes. For detailed installation instructions for Windows, please follow these [instructions](https://www.tensorflow.org/install/pip#windows). 
+
 ## Description of Files
 The python codes are divided into one main file named "Main_SE_EPRI.py" and other files containing the functions that are called in the main file.
 The files containing the functions and their objectives are listed below.
