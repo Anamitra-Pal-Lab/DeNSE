@@ -2,7 +2,7 @@
 This repository contains the resources for implementation of the DNN based State Estimator in python programming language.
 
 ## Motivation
-A
+Power utilities typically places the PMUs in the higher voltage levels before going to the lower voltage levels. This approach combined with high cost leaves 
 ## Languages and Dependencies
 The entire program was implemented using Python programming language.  Specifically, the open-source Python package Tensorflow was used to train the neural network models. For the data generation, the Matpower library in Matlab was used. 
 
@@ -21,7 +21,8 @@ The files containing the functions and their objectives are listed below.
 1. A sample data set for demonstrating the DeNSE functionalities on the base topology can be found at https://www.dropbox.com/scl/fo/sayc5kd7t61mnkb4bhbml/h?rlkey=qneqvldwjxh57zv2sijbp7lqq&dl=0.
 2. A sample data set for demonstrating the transfer learning capability of DeNSE for different topologies can be found at https://www.dropbox.com/scl/fo/unz106n0vhigokogbw4vj/h?rlkey=v7s0gdh2i7u300p10xebxkdet&dl=0.
 
-
+## Usage of Files
+a
 
 
 
