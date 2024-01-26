@@ -19,7 +19,8 @@ The files containing the functions and their objectives are listed below.
 
 ## Sample Data for DeNSE
 1. A sample data set for demonstrating the DeNSE functionalities on the base topology can be found at https://www.dropbox.com/scl/fo/sayc5kd7t61mnkb4bhbml/h?rlkey=qneqvldwjxh57zv2sijbp7lqq&dl=0.
-2. A sample data set for demonstrating the transfer learning capability of DeNSE for different topologies can be found at https://www.dropbox.com/scl/fo/unz106n0vhigokogbw4vj/h?rlkey=v7s0gdh2i7u300p10xebxkdet&dl=0.
+2. A sample data set for training the transfer learning capability of DeNSE for different topologies can be found at https://www.dropbox.com/scl/fo/unz106n0vhigokogbw4vj/h?rlkey=v7s0gdh2i7u300p10xebxkdet&dl=0.
+3. A sample data set for demonstrating the transfer learning capability of DeNSE for different topologies can be found at https://www.dropbox.com/scl/fo/1esngxtp19g4hx6z490j3/h?rlkey=2desjrgbaohubj2a8mth8iez3&dl=0
 
 ## Usage of Files
 Download all the files provided in this repository and store them in a folder. Download the sample data set provided above and keep it in the same folder. Run the main file ('Main_EPRI_SE.py') to train the DNN, and evaluate the state estimation performance.
