@@ -1,5 +1,5 @@
 # DNN based State Estimator (DeNSE) for Transmission Systems
-This repository contains the resources for implementation of the DNN based State Estimator in python programming language.
+This repository contains the resources for implementation of the DNN based State Estimator. This is based on the paper ["Time-Synchronized Full System State Estimation Considering Practical Implementation Challenges"](https://arxiv.org/abs/2212.01729) which is currently under review in the Journal of Modern Power Systems and Clean Energy.  
 
 ## Motivation
 Power utilities typically places the PMUs in the higher voltage levels before going to the lower voltage levels. This approach combined with high cost leaves 
