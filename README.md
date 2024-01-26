@@ -2,7 +2,7 @@
 This repository contains the resources for implementation of the DNN based State Estimator. This is based on the paper ["Time-Synchronized Full System State Estimation Considering Practical Implementation Challenges"](https://arxiv.org/abs/2212.01729) which is currently under review in the Journal of Modern Power Systems and Clean Energy.  
 
 ## Motivation
-Power utilities typically places the PMUs in the higher voltage levels before going to the lower voltage levels. This approach combined with high cost leaves 
+Power utilities commonly prioritize the placement of Phasor Measurement Units (PMUs) at higher voltage levels before considering lower voltage levels. This strategy results in a significant portion of lower voltage levels in transmission systems remaining unmonitored. Traditional state estimation methods require complete system observability to accurately estimate states, a condition not always met in these scenarios. To address this gap, we introduce a novel learning-based method, DeNSE, designed specifically to accurately estimate the states of lower voltage levels in transmission systems, even in situations where full observability is not achieved.
 ## Languages and Dependencies
 The entire program was implemented using Python programming language.  Specifically, the open-source Python package Tensorflow was used to train the neural network models. For the data generation, the Matpower library in Matlab was used. 
 
