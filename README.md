@@ -22,6 +22,11 @@ The files containing the functions and their objectives are listed below.
 2. A sample data set for training the transfer learning capability of DeNSE for different topologies can be found at https://www.dropbox.com/scl/fo/unz106n0vhigokogbw4vj/h?rlkey=v7s0gdh2i7u300p10xebxkdet&dl=0.
 3. A sample data set for demonstrating the transfer learning capability of DeNSE for different topologies can be found at https://www.dropbox.com/scl/fo/1esngxtp19g4hx6z490j3/h?rlkey=2desjrgbaohubj2a8mth8iez3&dl=0
 
+## Sample Simulation Results
+1. Performance of DeNSE under different noise models for IEEE 118-bus system
+
+2. Transfer learning results
+
 ## Usage of Files
 Download all the files provided in this repository and store them in a folder. Download the sample data set provided above and keep it in the same folder. Run the main file ('Main_EPRI_SE.py') to train the DNN, and evaluate the state estimation performance.
 
