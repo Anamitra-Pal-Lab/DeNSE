@@ -84,7 +84,7 @@ def DNN_training_TransferLearning(X_train, X_val, y_train, y_val, x, y):
 
     model.add(Dense(y.shape[1])) # Output
     #model.load_weights("D:\Hritik/newest_692023_51.h5")
-    model.load_weights("Base_TF_weights_11.h5")
+    model.load_weights("saved_DNN_model_for_TL.h5")
     model.compile(loss='mean_squared_error',metrics = ['mae'], optimizer='adam')
     #monitor = EarlyStopping(monitor='val_mae',mode ='min', min_delta=0.0000001, patience=30, verbose=1, baseline=0.1070)
     reduce_lr = ReduceLROnPlateau(monitor='val_mae', factor=0.1, patience=30, mode='min', min_delta=0.0000001)
