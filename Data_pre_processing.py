@@ -44,10 +44,10 @@ def PMU_current_flow_identifier(pmu_loc1, df_From_To_buses_118):
         for qf in range(From_To_buses_118_np[:,0].shape[0]):
             if(From_To_buses_118_np[qf,0]==bus_chosen):
               PMU_current_from_bus_branch_num.append(qf)
-      
+              #print(str(qf), str(bus_chosen))
             if(From_To_buses_118_np[qf,1]==bus_chosen):
               PMU_current_to_bus_branch_num.append(qf)
-        
+              #print(str(From_To_buses_118_np[qf,0]), str(bus_chosen))
     
     
     PMU_current_from_bus_branch_num = np.asarray(PMU_current_from_bus_branch_num) # from bus branches required (in terms of python index) (6 corresponds to 7th row in from bus - to bus)
@@ -112,6 +112,7 @@ def Generate_noisy_measurements_Gaussian_noise(sigma_mag, sigma_ang, df_VDATA_ma
     n_Sample_ip = df_If_mag_PMU.shape[0]
     n_feature_ip = df_If_mag_PMU.shape[1]
     df_If_mag_PMU_noise = pd.DataFrame(np.random.randn(n_Sample_ip, n_feature_ip)*sigma_mag, columns = df_If_mag_renamed.columns)
+    # df_If_mag_PMU_noisy = df_If_mag_renamed.add(df_If_mag_PMU_noise, fill_value=0)
     df_If_mag_PMU_noisy = df_If_mag_renamed.multiply((1+df_If_mag_PMU_noise), fill_value=0)
     
     n_Sample_ip = df_If_ang_PMU.shape[0]
@@ -123,6 +124,7 @@ def Generate_noisy_measurements_Gaussian_noise(sigma_mag, sigma_ang, df_VDATA_ma
     n_Sample_ip = df_It_mag_PMU.shape[0]
     n_feature_ip = df_It_mag_PMU.shape[1]
     df_It_mag_PMU_noise = pd.DataFrame(np.random.randn(n_Sample_ip, n_feature_ip)*sigma_mag, columns = df_It_mag_renamed.columns)
+    # df_It_mag_PMU_noisy = df_It_mag_renamed.add(df_It_mag_PMU_noise, fill_value=0)
     df_It_mag_PMU_noisy = df_It_mag_renamed.multiply((1+df_It_mag_PMU_noise), fill_value=0)
     
     n_Sample_ip = df_It_ang_PMU.shape[0]
