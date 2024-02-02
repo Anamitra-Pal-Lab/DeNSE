@@ -213,7 +213,8 @@ T = Load_Training_Data(filepath, i)
 [df_VDATA_mag, df_VDATA_ang, df_If_mag, df_If_ang, df_It_mag, df_It_ang] = T
 
 
-
+pmu_loc1 = [8,9,10,26,30,38,63,64,65,68,81] 
+pmu_loc1_python_index = (np.asarray(pmu_loc1)-1).tolist()
 [From_branches_req, To_branches_req] = PMU_current_flow_identifier(pmu_loc1, df_From_To_buses_118)
 sigma_mag = 0.01*2/6
 sigma_ang = 0.5*2/6
@@ -232,21 +233,21 @@ X_train, X_val, y_train, y_val = train_test_split(x, y, test_size=0.25, random_s
 Transfer_learning_model = DNN_training_TransferLearning(X_train, X_val, y_train, y_val, x, y)
 
 filepath_test = r"Transfer_Learning_Data_Testing" # path to Transfer Learning data folder from dropbox weblink
-T_t = Load_Testing_Data(filepath_test
-                        , i)
+T_t = Load_Testing_Data(filepath_test, i)
 [df_VDATA_mag_test, df_VDATA_ang_test, df_If_mag_test, df_If_ang_test, df_It_mag_test, df_It_ang_test] = T_t
 # Extracting PMU placed buses data
-df_VDATA_ang_renamed_whole = df_VDATA_ang_test.rename(columns={x:y for x,y in zip(df_VDATA_ang_test.columns,range(0+118,len(df_VDATA_ang_test.columns)+118))}) 
-df_V_mag_PMU_test = df_VDATA_mag_test[df_VDATA_mag_test.columns[pmu_loc1_python_index]]
-df_V_ang_PMU_test = df_VDATA_ang_test[df_VDATA_ang_test.columns[pmu_loc1_python_index]]
+[df_VDATA_mag_test, df_VDATA_ang_test, df_If_mag_test, df_If_ang_test, df_It_mag_test, df_It_ang_test] = T_t
 
 df_If_mag_PMU_test = df_If_mag_test[df_If_mag_test.columns[From_branches_req]]
 df_If_ang_PMU_test = df_If_ang_test[df_If_ang_test.columns[From_branches_req]]
 df_It_mag_PMU_test = df_It_mag_test[df_It_mag_test.columns[To_branches_req]]
 df_It_ang_PMU_test = df_It_ang_test[df_It_ang_test.columns[To_branches_req]]
+
 df_Input_NN_test = pd.concat([df_V_mag_PMU_test, np.deg2rad(df_V_ang_PMU_test), df_If_mag_PMU_test, np.deg2rad(df_If_ang_PMU_test), df_It_mag_PMU_test, np.deg2rad(df_It_ang_PMU_test) ], axis=1) # Concatenating voltage magnitude and angles to get input
 
 df_Output_NN_test = pd.concat([df_VDATA_mag_test,np.deg2rad(df_VDATA_ang_renamed_whole)], axis=1)
+headings = df_Input_NN_train.columns.tolist()
+df_Input_NN_test.columns = headings
 
 # Normalizing and Removing NANs
 df_Input_NN_normalized_test = Input_Data_Normalization(df_Input_NN_test, df_Input_NN_train)
@@ -254,7 +255,29 @@ df_Input_NN_normalized_test = Input_Data_Normalization(df_Input_NN_test, df_Inpu
 X_test_TL = df_Input_NN_normalized_test.values # x- input matrix
 y_test_TL = df_Output_NN_test.values # y - output 
 predicted_TL_state_esimates = load.predict(X_test_TL)
-[Mag_MAPE_TL, Angle_MAE_TL] = Estimation_Error_MAE_viz(X_test_TL,   y_test_TL, predicted_TL_state_esimates , pmu_loc1)
+pmu_loc_np = np.asarray(pmu_loc1) # pmu_loc_np - numpy version of pmu locaiton indices
+Entire_buses = np.zeros((118,1)) # Initializing the Location of all buses 
+    
+for q in range(118):
+    Entire_buses[q] = q+1 # Lcoation of all buses (numpy array from 1 to 118)
+
+Mag_MAE =np.mean(abs(y_test[:,0:118] - predicted_TL_state_esimates[:,0:118]), axis=0)*100
+print(np.mean(Mag_MAE))
+Angle_MAE = np.mean(abs(y_test[:,118:236] - predicted_TL_state_esimates[:,118:236]), axis=0)
+print(np.mean(Angle_MAE))
+    
+          
+barlist1 = plt.bar(Entire_buses[:,0], Mag_MAE , color ='blue',width = 0.8)
+
+plt.xlabel('Bus number')
+plt.ylabel('Voltage Magnitude Error (MAPE)')
+plt.show()
+    
+    
+barlist1 = plt.bar(Entire_buses[:,0], Angle_MAE, color ='blue',width = 0.8)
+plt.xlabel('Bus number')
+plt.ylabel('Voltage Angle Error (MAE)')
+plt.show()
 
 
 
