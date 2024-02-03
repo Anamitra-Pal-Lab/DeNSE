@@ -254,16 +254,16 @@ df_Input_NN_normalized_test = Input_Data_Normalization(df_Input_NN_test, df_Inpu
 [df_Input_NN_normalized_test, df_Output_NN_test] =  Data_Removing_NaNs(df_Input_NN_normalized_test, df_Output_NN_test)
 X_test_TL = df_Input_NN_normalized_test.values # x- input matrix
 y_test_TL = df_Output_NN_test.values # y - output 
-predicted_TL_state_esimates = load.predict(X_test_TL)
+predicted_TL_state_esimates = Transfer_learning_model.predict(X_test_TL)
 pmu_loc_np = np.asarray(pmu_loc1) # pmu_loc_np - numpy version of pmu locaiton indices
 Entire_buses = np.zeros((118,1)) # Initializing the Location of all buses 
     
 for q in range(118):
     Entire_buses[q] = q+1 # Lcoation of all buses (numpy array from 1 to 118)
 
-Mag_MAE =np.mean(abs(y_test[:,0:118] - predicted_TL_state_esimates[:,0:118]), axis=0)*100
+Mag_MAE =np.mean(abs(y_test_TL[:,0:118] - predicted_TL_state_esimates[:,0:118]), axis=0)*100
 print(np.mean(Mag_MAE))
-Angle_MAE = np.mean(abs(y_test[:,118:236] - predicted_TL_state_esimates[:,118:236]), axis=0)
+Angle_MAE = np.mean(abs(y_test_TL[:,118:236] - predicted_TL_state_esimates[:,118:236]), axis=0)
 print(np.mean(Angle_MAE))
     
           
