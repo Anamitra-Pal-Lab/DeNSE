@@ -29,7 +29,7 @@ The files containing the functions and their objectives are listed below.
 <img src="Figure4-5.jpg" width="400"/>
 
 ## Usage of Files
-Download all the files provided in this repository and store them in a folder. Download the sample data set provided above and keep it in the same folder. Run the main file ('Main_EPRI_SE.py') to train the DNN, and evaluate the state estimation performance.
+Download all the files provided in this repository and store them in a folder. Download the sample data set provided above and keep it in the same folder. Run the main file ('Main_DeNSE.py') to train the DNN, and evaluate the state estimation performance.
 
 
 
