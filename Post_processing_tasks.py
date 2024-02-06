@@ -35,18 +35,18 @@ def Post_processing(y_test, pred, Entire_buses):
     pd.DataFrame(Mag_MAE).to_csv('Mag_MAPE_118.csv')
     pd.DataFrame(Angle_MAE).to_csv('Angle_MAE_118.csv')
               
-    barlist1 = plt.bar(Entire_buses[:,0], Mag_MAE , color ='blue',width = 0.8)
-    plt.xlabel('Bus number')
-    plt.ylabel('Voltage Magnitude Error (MAPE)')
-    plt.savefig('Vmag_MAE_SE_T1.png',bbox_inches='tight', dpi=300)
-    plt.show()
+    # barlist1 = plt.bar(Entire_buses[:,0], Mag_MAE , color ='blue',width = 0.8)
+    # plt.xlabel('Bus number')
+    # plt.ylabel('Voltage Magnitude Error (MAPE)')
+    # plt.savefig('Vmag_MAE_SE_T1.png',bbox_inches='tight', dpi=300)
+    # plt.show()
         
         
-    barlist1 = plt.bar(Entire_buses[:,0], Angle_MAE, color ='blue',width = 0.8)
-    plt.xlabel('Bus number')
-    plt.ylabel('Voltage Angle Error (MAE)')
-    plt.savefig('Vang_MAE_SE_T1.png',bbox_inches='tight', dpi=300)
-    plt.show()
+    # barlist1 = plt.bar(Entire_buses[:,0], Angle_MAE, color ='blue',width = 0.8)
+    # plt.xlabel('Bus number')
+    # plt.ylabel('Voltage Angle Error (MAE)')
+    # plt.savefig('Vang_MAE_SE_T1.png',bbox_inches='tight', dpi=300)
+    # plt.show()
     
     return(Mag_MAE, Angle_MAE)
 
