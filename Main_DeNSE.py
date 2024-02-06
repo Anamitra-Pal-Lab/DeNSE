@@ -202,7 +202,7 @@ pred_bad_replaced_w_NOC = load.predict(X_test_bad_replaced_with_nearest_OC)
 
 #%% Transfer Learning Section (TL)
 i =input("Enter the dataset: ")
-filepath = r"E:\New folder\DeNSE_10k_Train_Likely_Topologies_TCTR\\" # path to Transfer Learning data folder from dropbox weblink
+filepath = r"your\path\DeNSE_10k_Train_Likely_Topologies_TCTR\\" # path to Transfer Learning data folder from dropbox weblink
 T = Load_Training_Data(filepath, i)
 
 
@@ -227,7 +227,7 @@ X_train, X_val, y_train, y_val = train_test_split(x, y, test_size=0.25, random_s
 
 
 Transfer_learning_model = DNN_training_TransferLearning(X_train, X_val, y_train, y_val, x, y)
-filepath_test = r"E:\New folder\DeNSE_Transfer_Learning_Test_Data\\" # path to Transfer Learning data folder from dropbox weblink
+filepath_test = r"your\path\DeNSE_Transfer_Learning_Test_Data\\" # path to Transfer Learning data folder from dropbox weblink
 T_t = Load_Testing_Data(filepath_test, i)
 [df_VDATA_mag_test, df_VDATA_ang_test, df_If_mag_test, df_If_ang_test, df_It_mag_test, df_It_ang_test] = T_t
 # Extracting PMU placed buses data
