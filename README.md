@@ -9,7 +9,7 @@ The entire program was implemented using Python programming language.  Specifica
 The standard Python libraries like Numpy, Pandas, Matplotlib etc. need to be installed to run these codes. For detailed installation instructions for Windows, please follow these [instructions](https://www.tensorflow.org/install/pip#windows). 
 
 ## Description of Files
-The python codes are divided into one main file named "Main_SE_EPRI.py" and other files containing the functions that are called in the main file.
+The python codes are divided into one main file named "Main_DeNSE.py" and other files containing the functions that are called in the main file.
 The files containing the functions and their objectives are listed below.
 1. Data loading - Loading the data in the order of inputs compatible with the DNN
 2. Data pre processing.py - Pre processing functions making the technique robust for realistic data - including noise addition and normalization
@@ -30,6 +30,11 @@ The files containing the functions and their objectives are listed below.
 
 ## Usage of Files
 Download all the files provided in this repository and store them in a folder. Download the sample data set provided above and keep it in the same folder. Run the main file ('Main_DeNSE.py') to train the DNN, and evaluate the state estimation performance.
+Download data #1 (base topology) and place all .csv files in the same folder where your Python files are located.
+Download data #2 (training data for trasnfer learning) and update the directory in Main_DeNSE.py file at line number 205.
+Download data #3 (demonstrating data for trasnfer learning) and update the directory in Main_DeNSE.py file at line number 230.
+
+
 
 
 
