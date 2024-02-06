@@ -12,13 +12,17 @@ import pandas as pd
 from sklearn import metrics
 import math
 import time
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
+from keras.models import load_model
+
 ##################################################################################################
 
 ##################################################################################################
 ### Loading the functions used in this main file
 from Data_Loading import DeNSE_data_loader_training_data
 from Data_Loading import DeNSE_data_loader_testing_data
-from Data_Loading import Load_Training_Data, Load_Training_Data
+from Data_Loading import Load_Training_Data
+from Data_Loading import Load_Testing_Data
 from Data_pre_processing import PMU_current_flow_identifier  ## Based on PMU locations, determines the line flows that are directly observable
 from Data_pre_processing import Generate_noisy_measurements_Gaussian_noise ## Generate Gaussian noisy measurements by adding Gaussian noise
 from Data_pre_processing import Input_Data_Normalization ## Normalizing the input data
@@ -61,9 +65,6 @@ pmu_loc1_python_index = (np.asarray(pmu_loc1)-1).tolist()
 
 df_From_To_buses_118 = pd.read_csv('From_To_buses_118.csv', header = None) # The from bus- to bus information
 
-#pmu_loc1 =  pd.read_csv('PMU_locations.csv', header = None) # the PMU locations as input
-
-
 ## Extracting From and To branch information for PMU placed buses
 [From_branches_req, To_branches_req] = PMU_current_flow_identifier(pmu_loc1, df_From_To_buses_118)
 
@@ -80,16 +81,16 @@ df_Input_NN_normalized = Input_Data_Normalization(df_Input_NN, df_Input_NN_train
 [df_Input_NN_normalized, df_Output_NN] =  Data_Removing_NaNs(df_Input_NN_normalized, df_Output_NN)
 x = df_Input_NN_normalized.values # x- input matrix
 y = df_Output_NN.values # y - output matrix
-X_train, X_val, y_train, y_val = train_test_split(x, y, test_size=0.25, random_state= 8) #
+X_train, X_val, y_train, y_val = train_test_split(x, y, test_size=0.25, random_state= 8) 
 ##################################################################################################
 #%% Training Deep Neural Network Model
 model = DNN_training_base_topology(X_train, X_val, y_train, y_val, x, y)
-#%% Data Preprocesing Stage-Testing Data
 
+#%%
+# Data Preprocesing Stage-Testing Data
 [df_If_mag_test, df_If_ang_test, df_It_mag_test,  df_It_ang_test, df_VDATA_mag_test, df_VDATA_ang_test] =  DeNSE_data_loader_testing_data()
 
 
-#%%
 # Extracting PMU placed buses data
 df_VDATA_ang_renamed_whole = df_VDATA_ang_test.rename(columns={x:y for x,y in zip(df_VDATA_ang_test.columns,range(0+118,len(df_VDATA_ang_test.columns)+118))}) 
 df_V_mag_PMU_test = df_VDATA_mag_test[df_VDATA_mag_test.columns[pmu_loc1_python_index]]
@@ -100,7 +101,7 @@ df_If_ang_PMU_test = df_If_ang_test[df_If_ang_test.columns[From_branches_req]]
 df_It_mag_PMU_test = df_It_mag_test[df_It_mag_test.columns[To_branches_req]]
 df_It_ang_PMU_test = df_It_ang_test[df_It_ang_test.columns[To_branches_req]]
 df_Input_NN_test = pd.concat([df_V_mag_PMU_test, np.deg2rad(df_V_ang_PMU_test), df_If_mag_PMU_test, np.deg2rad(df_If_ang_PMU_test), df_It_mag_PMU_test, np.deg2rad(df_It_ang_PMU_test) ], axis=1) # Concatenating voltage magnitude and angles to get input
-#%%
+
 df_Output_NN_test = pd.concat([df_VDATA_mag_test,np.deg2rad(df_VDATA_ang_renamed_whole)], axis=1)
 
 
@@ -110,35 +111,26 @@ df_Input_NN_test.columns = headings
 # Normalizing and Removing NANs
 df_Input_NN_normalized_test = Input_Data_Normalization(df_Input_NN_test, df_Input_NN_train)
 
-#%%
+
 [df_Input_NN_normalized_test, df_Output_NN_test] =  Data_Removing_NaNs(df_Input_NN_normalized_test, df_Output_NN_test)
 X_test = df_Input_NN_normalized_test.values # x- input matrix
 y_test = df_Output_NN_test.values # y - output 
 
-
-#%% Predicted State Estimates
+# Predicted State Estimates
 pred = model.predict(X_test)
-#%% Visualizing DeNSE performance
+# Visualizing DeNSE performance
 pmu_loc_np = np.asarray(pmu_loc1) # pmu_loc_np - numpy version of pmu locaiton indices
-
     
 Entire_buses = np.zeros((118,1)) # Initializing the Lcoation of all buses 
     
 for q in range(118):
     Entire_buses[q] = q+1 # Lcoation of all buses (numpy array from 1 to 118)
       
-      
-
 [Mag_MAPE, Angle_MAE] = Post_processing(y_test, pred, Entire_buses)
-
-#%%
-
-
 
 
 ## Creating Test data with bad data by injecting bad values to some of the features in every sample randomly - X_test_with_BD
-
-Prob_bad_Data = 0.2
+Prob_bad_Data = 0.1
 Std_Bad_data = 3
 Mean_bad_data = 3
 
@@ -157,7 +149,7 @@ for i in range(X_test.shape[0]):
         BD_curr_counter = BD_curr_counter + 1
         BD_net_counter = BD_net_counter + 1
 
-#%%
+
 ## comparing the actual bad data indices with those flagged as bad data by Wald test
 
 Bad_data_feature_actual =   Bad_data_feature_np_actual[np.nonzero(Bad_data_feature_np_actual[:,1])]  
@@ -167,8 +159,7 @@ Bad_data_index_wald_test_np[:,0] = Bad_data_index_wald_test[0]
 Bad_data_index_wald_test_np[:,1] = Bad_data_index_wald_test[1]
 
 
-#%% BD replacement with mean
-#pmu_loc1 = pmu_loc1[0].values
+#♦ BD replacement with mean
 
 X_test_bad_replaced_w_mean = np.copy(X_test_with_BD)
 for sample_num in range(X_test_with_BD.shape[0]):
@@ -177,14 +168,17 @@ for sample_num in range(X_test_with_BD.shape[0]):
     X_test_bad_sample_replaced_w_mean =Bad_Data_replacement_with_mean_samplewise_DeNSE(X_test_bad_sample, bad_data_index_wald_test_sample)
     X_test_bad_replaced_w_mean[sample_num, :] =  X_test_bad_sample_replaced_w_mean
 
-load = load_model("Base_topology_DNN_TF_11.h5")
+load = load_model("Base_topology_DNN_model.h5")
 
 pred_bad_replaced_w_mean = load.predict(X_test_bad_replaced_w_mean)
-#MSE_BD_replaced_with_mean = mean_squared_error(y_test, pred_bad_replaced_w_mean)
-#[Mag_MAPE_rwm, Angle_MAE_rwm] = Estimation_Error_MAE_viz(X_test_bad_replaced_w_mean, y_test, pred_bad_replaced_w_mean , pmu_loc1) # the estimation errors when bad data is replaced with mean
 
-[Mag_MAPE_rwm, Angle_MAE_rwm] = Estimation_Error_MAE_viz(X_test_bad_replaced_w_mean,   y_test, pred_bad_replaced_w_mean , pmu_loc1)
-#%% BD replacement with Nearesr Operating Condition
+pred_with_BD = load.predict(X_test_with_BD)
+[Mag_MAPE_with_BD, Angle_MAE_with_BD] = Post_processing( y_test, pred_with_BD, Entire_buses)
+
+[Mag_MAPE_rwm, Angle_MAE_rwm] = Post_processing( y_test, pred_bad_replaced_w_mean, Entire_buses)
+
+
+# BD replacement with Nearest Operating Condition
 
 exec_time = []
 X_test_bad_replaced_with_nearest_OC = np.copy(X_test_with_BD)
@@ -199,20 +193,20 @@ for sample_num in range(X_test_with_BD.shape[0]):
     elapsed = time.time() - t
     print(elapsed)
     exec_time.append(elapsed)
-load = load_model("Base_topology_DNN_TF_11.h5")
+load = load_model("Base_topology_DNN_model.h5")
 pred_bad_replaced_w_NOC = load.predict(X_test_bad_replaced_with_nearest_OC)
-#%%
-[Mag_MAPE_rwNOC, Angle_MAE_rwNOC] = Estimation_Error_MAE_viz(X_test_bad_replaced_with_nearest_OC,   y_test, pred_bad_replaced_w_NOC , pmu_loc1)
+
+[Mag_MAPE_rwNOC, Angle_MAE_rwNOC] = Post_processing( y_test, pred_bad_replaced_w_NOC , Entire_buses)
+
+#%%%
 
 #%% Transfer Learning Section (TL)
-
-
 i =input("Enter the dataset: ")
-filepath = r"Transfer_Learning_Data_Training" # path to Transfer Learning data folder from dropbox weblink
+filepath = r"E:\New folder\DeNSE_10k_Train_Likely_Topologies_TCTR\\" # path to Transfer Learning data folder from dropbox weblink
 T = Load_Training_Data(filepath, i)
 
 
-[df_VDATA_mag, df_VDATA_ang, df_If_mag, df_If_ang, df_It_mag, df_It_ang] = T
+[df_VDATA_mag, df_VDATA_ang, df_If_mag, df_If_ang, df_It_mag, df_It_ang, df_From_To_buses_118] = T
 
 
 pmu_loc1 = [8,9,10,26,30,38,63,64,65,68,81] 
@@ -233,12 +227,16 @@ X_train, X_val, y_train, y_val = train_test_split(x, y, test_size=0.25, random_s
 
 
 Transfer_learning_model = DNN_training_TransferLearning(X_train, X_val, y_train, y_val, x, y)
-
-filepath_test = r"Transfer_Learning_Data_Testing" # path to Transfer Learning data folder from dropbox weblink
+filepath_test = r"E:\New folder\DeNSE_Transfer_Learning_Test_Data\\" # path to Transfer Learning data folder from dropbox weblink
 T_t = Load_Testing_Data(filepath_test, i)
 [df_VDATA_mag_test, df_VDATA_ang_test, df_If_mag_test, df_If_ang_test, df_It_mag_test, df_It_ang_test] = T_t
 # Extracting PMU placed buses data
-[df_VDATA_mag_test, df_VDATA_ang_test, df_If_mag_test, df_If_ang_test, df_It_mag_test, df_It_ang_test] = T_t
+#[df_VDATA_mag_test, df_VDATA_ang_test, df_If_mag_test, df_If_ang_test, df_It_mag_test, df_It_ang_test] = T_t
+
+# Extracting PMU placed buses data
+df_VDATA_ang_renamed_whole = df_VDATA_ang_test.rename(columns={x:y for x,y in zip(df_VDATA_ang_test.columns,range(0+118,len(df_VDATA_ang_test.columns)+118))}) 
+df_V_mag_PMU_test = df_VDATA_mag_test[df_VDATA_mag_test.columns[pmu_loc1_python_index]]
+df_V_ang_PMU_test = df_VDATA_ang_test[df_VDATA_ang_test.columns[pmu_loc1_python_index]]
 
 df_If_mag_PMU_test = df_If_mag_test[df_If_mag_test.columns[From_branches_req]]
 df_If_ang_PMU_test = df_If_ang_test[df_If_ang_test.columns[From_branches_req]]
@@ -280,9 +278,3 @@ barlist1 = plt.bar(Entire_buses[:,0], Angle_MAE, color ='blue',width = 0.8)
 plt.xlabel('Bus number')
 plt.ylabel('Voltage Angle Error (MAE)')
 plt.show()
-
-
-
-
-
-
