@@ -29,10 +29,10 @@ The files containing the functions and their objectives are listed below.
 <img src="Figure4-5.jpg" width="400"/>
 
 ## Usage of Files
-Download all the files provided in this repository and store them in a folder. Download the sample data set provided above and keep it in the same folder. Run the main file ('Main_DeNSE.py') to train the DNN, and evaluate the state estimation performance.
-Download data #1 (base topology) and place all .csv files in the same folder where your Python files are located.
-Download data #2 (training data for trasnfer learning) and update the directory in Main_DeNSE.py file at line number 205.
-Download data #3 (demonstrating data for trasnfer learning) and update the directory in Main_DeNSE.py file at line number 230.
+1. Download all the files provided in this repository and store them in a folder. Download the sample data set provided above and keep it in the same folder. Run the main file ('Main_DeNSE.py') to train the DNN, and evaluate the state estimation performance.
+2. Download data #1 (base topology) and place all .csv files in the same folder where your Python files are located.
+3. Download data #2 (training data for trasnfer learning) and update the directory in Main_DeNSE.py file at line number 205.
+4. Download data #3 (demonstrating data for trasnfer learning) and update the directory in Main_DeNSE.py file at line number 230.
 
 
 
