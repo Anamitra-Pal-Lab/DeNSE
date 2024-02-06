@@ -50,17 +50,15 @@ def DNN_training_base_topology(X_train, X_val, y_train, y_val, x, y):
     reduce_lr = ReduceLROnPlateau(monitor='val_mae', factor=0.2,patience=10, min_lr=0.0001)
     filepath="weights.best.hdf5"
     checkpoint = ModelCheckpoint(filepath, monitor='val_mae', verbose=1, save_best_only=True)
-    
+    model.save_weights("Base_topology_DNN_weights.h5")
+    model.save("Base_topology_DNN_model.h5")
     # history = model.fit(x_train,y_train,verbose=1,epochs=20,validation_split=0.2,callbacks=[ES])
     start = time.time()
-    model.fit(X_train,y_train,verbose=1,epochs=1000,validation_data = (X_val,y_val),batch_size=256,callbacks=[checkpoint,reduce_lr])
+    model.fit(X_train,y_train,verbose=1,epochs=2000,validation_data = (X_val,y_val),batch_size=256,callbacks=[checkpoint,reduce_lr])
     end = time.time()
     elapsed_time = end-start
     elapsed_time
-    # model.save_weights("C:\Downloads\Base_TF_weights_11.h5")
-    # model.save("C:\Downloads\Saved_models\Base_topology_DNN_TF_11.h5")
-    model.save_weights("Base_TF_weights_11.h5")
-    model.save("Base_topology_DNN_TF_11.h5")
+
     return(model)
 
 
@@ -83,8 +81,8 @@ def DNN_training_TransferLearning(X_train, X_val, y_train, y_val, x, y):
     model.add(Dropout(0.3))
 
     model.add(Dense(y.shape[1])) # Output
-    #model.load_weights("D:\Hritik/newest_692023_51.h5")
-    model.load_weights("saved_DNN_model_for_TL.h5")
+    # model.load_weights(r'Base_TF_weights_11.h5')
+    model.load_weights(r'Base_topology_DNN_weights.h5')
     model.compile(loss='mean_squared_error',metrics = ['mae'], optimizer='adam')
     #monitor = EarlyStopping(monitor='val_mae',mode ='min', min_delta=0.0000001, patience=30, verbose=1, baseline=0.1070)
     reduce_lr = ReduceLROnPlateau(monitor='val_mae', factor=0.1, patience=30, mode='min', min_delta=0.0000001)
@@ -93,6 +91,5 @@ def DNN_training_TransferLearning(X_train, X_val, y_train, y_val, x, y):
     end = time.time()
     elapsed_time = end-start
     print(elapsed_time)
-    #model.save_weights("D:\Hritik\Saved_models\Base_TF_weights_TF.h5")
-    #model.save("D:\Hritik\Saved_models\Base_topology_DNN_TF.h5")
+
     return(model)
